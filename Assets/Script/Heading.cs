@@ -4,8 +4,6 @@
 // Licence:  GNU General Public License
 // -----------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum Heading
@@ -13,7 +11,8 @@ public enum Heading
     Up,
     Down,
     Left,
-    Right
+    Right,
+    Max
 }
 
 public static class HeadingExtensionMethods

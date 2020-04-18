@@ -12,11 +12,13 @@ public class MovingEntity : MonoBehaviour
 {
     private const float Delta = 0.01f;
 
+    #pragma warning disable 0649
     [SerializeField]
     private float _speed;
 
     [SerializeField]
     private Heading _heading;
+    #pragma warning restore 0649
 
     void Start()
     {
