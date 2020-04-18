@@ -52,4 +52,22 @@ public static class HeadingExtensionMethods
         Debug.LogError("Invalid Heading");
         return Quaternion.Euler(0, 0, 0);
     }
+
+    public static Heading Opposite(this Heading heading)
+    {
+        switch (heading)
+        {
+            case Heading.Up:
+                return Heading.Down;
+            case Heading.Down:
+                return Heading.Up;
+            case Heading.Left:
+                return Heading.Right;
+            case Heading.Right:
+                return Heading.Left;
+        }
+
+        Debug.LogError("Invalid Heading");
+        return Heading.Max;
+    }
 }

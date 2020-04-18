@@ -146,6 +146,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1
   _heading: 0
+  _bounds:
+    minX: -6.2
+    minY: -4.2
+    maxX: 7.2
+    maxY: 5.2
 --- !u!114 &5751604282724496688
 MonoBehaviour:
   m_ObjectHideFlags: 0
