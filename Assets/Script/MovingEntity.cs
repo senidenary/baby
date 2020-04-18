@@ -10,6 +10,8 @@ using UnityEngine;
 
 public class MovingEntity : MonoBehaviour
 {
+    private const float Delta = 0.01f;
+
     [SerializeField]
     private float _speed;
 
@@ -25,12 +27,17 @@ public class MovingEntity : MonoBehaviour
         transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
         if (directionChanger != null)
         {
-            _heading = directionChanger.NewDirection;
+            float dist = Vector3.Distance(other.transform.position, transform.position);
+            if (dist < Delta)
+            {
+                _heading = directionChanger.NewDirection;
+                transform.position = other.transform.position;
+            }
         }
    }
 }

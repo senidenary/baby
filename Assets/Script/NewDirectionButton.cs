@@ -37,6 +37,8 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
     public void OnEndDrag(PointerEventData eventData)
     {
         Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(eventData.position);
+        spawnLocation.x = Mathf.Floor(spawnLocation.x);
+        spawnLocation.y = Mathf.Floor(spawnLocation.y);
         spawnLocation.z = 0;
         GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity) as GameObject;
         DirectionChanger directionChanger = obj.GetComponent<DirectionChanger>();
