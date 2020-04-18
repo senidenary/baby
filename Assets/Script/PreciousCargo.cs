@@ -12,6 +12,11 @@ public class PreciousCargo : MonoBehaviour
 {
     private const float KillDist = 0.8f;
 
+    public void Die()
+    {
+        Debug.Log("Hazard");
+    }
+
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Hazard")
@@ -19,7 +24,7 @@ public class PreciousCargo : MonoBehaviour
             float dist = Vector3.Distance(other.transform.position, transform.position);
             if (dist < KillDist)
             {
-                Debug.Log("Hazard");
+                Die();
             }
         }
     }

@@ -23,7 +23,7 @@ public class TwoWayDirectionChanger : MonoBehaviour
             return _firstHeading;
         }
 
-        Debug.LogError("Invalid direction!");
+        Debug.LogError("Invalid direction!" + "\n" + currentDirection + "\n" + currentDirection.Opposite());
         return Heading.Max;
     }
 }

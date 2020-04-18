@@ -32,51 +32,85 @@ public class MovingEntity : MonoBehaviour
     private GridBounds _bounds;
     #pragma warning restore 0649
 
+    private GameObject _nextDirectionChanger = null;
+    private float _prevDist;
+
     void Update()
     {
         transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime);
 
         Vector3 pos = transform.position;
+        bool reachedBorder = false;
         if (pos.x < _bounds.minX)
         {
+            reachedBorder = true;
             pos.x = _bounds.maxX;
         }
         else if (pos.x > _bounds.maxX)
         {
+            reachedBorder = true;
             pos.x = _bounds.minX;
         }
         else if (pos.y < _bounds.minY)
         {
+            reachedBorder = true;
             pos.y = _bounds.maxY;
         }
         else if (pos.y > _bounds.maxY)
         {
+            reachedBorder = true;
             pos.y = _bounds.minY;
         }
-        transform.position = pos;
+
+        if (reachedBorder)
+        {
+            transform.position = pos;
+            PreciousCargo preciousCargo = GetComponent<PreciousCargo>();
+            if (preciousCargo != null)
+            {
+                preciousCargo.Die();
+            }
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.GetComponent<DirectionChanger>() != null ||
+            other.gameObject.GetComponent<TwoWayDirectionChanger>() != null)
+        {
+            _nextDirectionChanger = other.gameObject;
+            _prevDist = Vector3.Distance(other.transform.position, transform.position);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
-        if (directionChanger != null && directionChanger.FromDirection == _heading)
+        if (_nextDirectionChanger == other.gameObject)
         {
-            float dist = Vector3.Distance(other.transform.position, transform.position);
-            if (dist < Delta)
+            DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
+            if (directionChanger != null && directionChanger.FromDirection == _heading)
             {
-                _heading = directionChanger.NewDirection;
-                transform.position = other.transform.position;
+                float dist = Vector3.Distance(other.transform.position, transform.position);
+                if (dist < Delta || dist > _prevDist)
+                {
+                    _heading = directionChanger.NewDirection;
+                    transform.position = other.transform.position;
+                    _nextDirectionChanger = null;
+                }
+                _prevDist = dist;
             }
-        }
 
-        TwoWayDirectionChanger twoWayDirectionChanger = other.gameObject.GetComponent<TwoWayDirectionChanger>();
-        if (twoWayDirectionChanger != null)
-        {
-            float dist = Vector3.Distance(other.transform.position, transform.position);
-            if (dist < Delta)
+            TwoWayDirectionChanger twoWayDirectionChanger = other.gameObject.GetComponent<TwoWayDirectionChanger>();
+            if (twoWayDirectionChanger != null)
             {
-                _heading = twoWayDirectionChanger.GetOtherDirection(_heading);
-                transform.position = other.transform.position;
+                float dist = Vector3.Distance(other.transform.position, transform.position);
+                if (dist < Delta || dist > _prevDist)
+                {
+                    _heading = twoWayDirectionChanger.GetOtherDirection(_heading);
+                    transform.position = other.transform.position;
+                    _nextDirectionChanger = null;
+                }
+                _prevDist = dist;
             }
         }
    }
