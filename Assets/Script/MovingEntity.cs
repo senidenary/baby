@@ -20,10 +20,6 @@ public class MovingEntity : MonoBehaviour
     private Heading _heading;
     #pragma warning restore 0649
 
-    void Start()
-    {
-    }
-
     void Update()
     {
         transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime);
