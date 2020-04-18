@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------
-// Filename: Direction.cs
+// Filename: Heading.cs
 // Author:   Harold Absalom
 // Licence:  GNU General Public License
 // -----------------------------------------------
@@ -8,28 +8,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Direction : MonoBehaviour
+public enum Heading
 {
-    public enum Heading
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
+    Up,
+    Down,
+    Left,
+    Right
+}
 
-    public Heading CurrentHeading
+public static class HeadingExtensionMethods
+{
+    public static Vector3 ToVector3(this Heading heading)
     {
-        get { return _heading; }
-        set { _heading = value; }
-    }
-
-    [SerializeField]
-    private Heading _heading;
-
-    public Vector3 ToVector3()
-    {
-        switch (_heading)
+        switch (heading)
         {
             case Heading.Up:
                 return new Vector3( 0,  1,  0);
@@ -45,9 +36,9 @@ public class Direction : MonoBehaviour
         return new Vector3(0, 0, 0);
     }
 
-    public Quaternion ToQuaternion()
+    public static Quaternion ToQuaternion(this Heading heading)
     {
-        switch (_heading)
+        switch (heading)
         {
             case Heading.Up:
                 return Quaternion.Euler(0, 0,   0);

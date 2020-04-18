@@ -8,22 +8,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Direction))]
 public class MovingEntity : MonoBehaviour
 {
     [SerializeField]
     private float _speed;
 
-    private Direction _direction;
+    [SerializeField]
+    private Heading _heading;
 
     void Start()
     {
-        _direction = GetComponent<Direction>();
     }
 
     void Update()
     {
-        transform.Translate(_direction.ToVector3() * _speed * Time.deltaTime);
+        transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,7 +30,7 @@ public class MovingEntity : MonoBehaviour
         DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
         if (directionChanger != null)
         {
-            _direction = directionChanger.NewDirection;
+            _heading = directionChanger.NewDirection;
         }
    }
 }

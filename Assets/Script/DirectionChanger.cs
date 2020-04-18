@@ -8,19 +8,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Direction))]
 public class DirectionChanger : MonoBehaviour
 {
-    public Direction NewDirection
+    public Heading NewDirection
     {
-        get { return _direction; }
+        get { return _heading; }
+        set { _heading = value; }
     }
 
-    private Direction _direction;
+    [SerializeField]
+    private Heading _heading;
 
-    void Start()
+    private void Start()
     {
-         _direction = GetComponent<Direction>();
-        transform.rotation = _direction.ToQuaternion();
+         UpdateDirection();
+    }
+
+    private void UpdateDirection()
+    {
+        transform.rotation = _heading.ToQuaternion();
     }
 }
