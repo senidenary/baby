@@ -13,7 +13,11 @@ public class DirectionChanger : MonoBehaviour
     public Heading NewDirection
     {
         get { return _heading; }
-        set { _heading = value; }
+        set
+        {
+            _heading = value;
+            UpdateDirection();
+        }
     }
 
     [SerializeField]

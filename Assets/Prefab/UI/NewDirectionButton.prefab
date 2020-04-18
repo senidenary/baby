@@ -130,5 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e83ac2939b9b07d45830a3fe1f3a862e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _newDirectionManager: {fileID: 0}
   _directionChangerPrefab: {fileID: 3571797721907889428, guid: 9ad70784600a3b84b8e55f7c11537e50,
     type: 3}
+  _heading: 0

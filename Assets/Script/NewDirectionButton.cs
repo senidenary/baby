@@ -4,11 +4,15 @@
 // Licence:  GNU General Public License
 // -----------------------------------------------
 
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    [SerializeField]
+    private GameObject _newDirectionManager;
+
     [SerializeField]
     private GameObject _directionChangerPrefab;
 
@@ -36,16 +40,38 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(eventData.position);
-        spawnLocation.x = Mathf.Floor(spawnLocation.x);
-        spawnLocation.y = Mathf.Floor(spawnLocation.y);
-        spawnLocation.z = 0;
-        GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity) as GameObject;
-        DirectionChanger directionChanger = obj.GetComponent<DirectionChanger>();
+        NewDirectionManager newDirectionManager = _newDirectionManager.GetComponent<NewDirectionManager>();
 
-        if (directionChanger != null)
+        Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(eventData.position);
+        NewDirectionManager.LegalPosition positionToTest;
+        positionToTest.x = Mathf.FloorToInt(spawnLocation.x + 0.5f);
+        positionToTest.y = Mathf.FloorToInt(spawnLocation.y + 0.5f);
+
+        int positionIndex = Array.FindIndex(newDirectionManager._legalPositions, p => p.x == positionToTest.x && p.y == positionToTest.y);
+        if (positionIndex != -1)
         {
-            directionChanger.NewDirection = _heading;
+            DirectionChanger directionChanger = null;
+
+            if (newDirectionManager._legalPositions[positionIndex].currentDirectionChanger != null)
+            {
+                directionChanger = newDirectionManager._legalPositions[positionIndex].currentDirectionChanger;
+            }
+            else
+            {
+                spawnLocation.x = positionToTest.x;
+                spawnLocation.y = positionToTest.y;
+                spawnLocation.z = 0;
+
+                GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity) as GameObject;
+                directionChanger = obj.GetComponent<DirectionChanger>();
+
+                newDirectionManager._legalPositions[positionIndex].currentDirectionChanger = directionChanger;
+            }
+
+            if (directionChanger != null)
+            {
+                directionChanger.NewDirection = _heading;
+            }
         }
 
         transform.position = _startPos;
