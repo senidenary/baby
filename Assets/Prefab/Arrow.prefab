@@ -97,6 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _heading: 0
+  _leftTurn: 0
+  _leftTurnSprite: {fileID: 21300000, guid: 317d4e0f65b633445a4e6725a586310c, type: 3}
+  _rightTurnSprite: {fileID: 21300000, guid: 2926954529c9b0443a835517c9e977d5, type: 3}
 --- !u!61 &8598494645839540862
 BoxCollider2D:
   m_ObjectHideFlags: 0

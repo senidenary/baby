@@ -32,7 +32,7 @@ public class MovingEntity : MonoBehaviour
     private void OnTriggerStay2D(Collider2D other)
     {
         DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
-        if (directionChanger != null)
+        if (directionChanger != null && directionChanger.FromDirection == _heading)
         {
             float dist = Vector3.Distance(other.transform.position, transform.position);
             if (dist < Delta)

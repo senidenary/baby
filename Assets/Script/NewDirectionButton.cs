@@ -6,6 +6,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -16,11 +17,25 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     [SerializeField]
     private Heading _heading;
+
+    [SerializeField]
+    private bool _leftTurn;
+
+    [SerializeField]
+    private Sprite _leftTurnSprite;
+
+    [SerializeField]
+    private Sprite _rightTurnSprite;
     #pragma warning restore 0649
 
     public Heading NewHeading
     {
         set { _heading = value; }
+    }
+
+    public bool LeftTurn
+    {
+        set { _leftTurn = value; }
     }
 
     public NewDirectionManager Manager
@@ -34,6 +49,16 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
     private void Start()
     {
         transform.rotation = _heading.ToQuaternion();
+
+        Image image = gameObject.GetComponent<Image>();
+        if (_leftTurn)
+        {
+            image.sprite = _leftTurnSprite;
+        }
+        else
+        {
+            image.sprite = _rightTurnSprite;
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -79,6 +104,7 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
             if (directionChanger != null)
             {
                 directionChanger.NewDirection = _heading;
+                directionChanger.LeftTurn = _leftTurn;
             }
 
             _newDirectionManager.HasBeenPlaced(gameObject);
