@@ -38,6 +38,9 @@ public class NewDirectionManager : MonoBehaviour
 
     [SerializeField]
     private GameObject _newDirectionButtonPrefab;
+
+    [SerializeField]
+    private GameObject _directionChangerPrefab;
     #pragma warning restore 0649
 
     private GridLayoutGroup _gridLayoutGroup;
@@ -49,6 +52,16 @@ public class NewDirectionManager : MonoBehaviour
         for (int i = 0; i < 4; ++i)
         {
             AddNewDirectionButton();
+        }
+
+        for (int i = 0; i < _legalPositions.Length; ++i)
+        {
+            Vector3 spawnLocation = new Vector3(_legalPositions[i].x, _legalPositions[i].y, 0);
+            GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity);
+            DirectionChanger directionChanger = obj.GetComponent<DirectionChanger>();
+            _legalPositions[i].CurrentDirectionChanger = directionChanger;
+            directionChanger.NewDirection = RandomHeading();
+            directionChanger.LeftTurn = RandomTurn();
         }
     }
 
