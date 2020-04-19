@@ -19,7 +19,7 @@ public class PreciousCargo : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "Hazard")
+        if (other.tag == "Car" || other.tag == "Fire")
         {
             float dist = Vector3.Distance(other.transform.position, transform.position);
             if (dist < KillDist)

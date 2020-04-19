@@ -91,10 +91,13 @@ public class MovingEntity : MonoBehaviour
         }
         else
         {
-            MovingEntity otherEntity = other.gameObject.GetComponent<MovingEntity>();
-            if (otherEntity != null)
+            if (other.tag == "Car" || other.tag == "Fire")
             {
-                otherEntity.Explode();
+                MovingEntity otherEntity = other.gameObject.GetComponent<MovingEntity>();
+                if (otherEntity)
+                {
+                    otherEntity.Explode();
+                }
                 Explode();
             }
         }
@@ -144,7 +147,7 @@ public class MovingEntity : MonoBehaviour
             Vector3 explosionPosition = transform.position;
             explosionPosition.z -= 2;
             GameObject explosionObject = GameObject.Instantiate(_explosionPrefab, explosionPosition, Quaternion.identity);
-            GameObject.Destroy(explosionObject, 0.5f);
+            //GameObject.Destroy(explosionObject, 0.5f);
             GameObject.Destroy(gameObject);
         }
     }
