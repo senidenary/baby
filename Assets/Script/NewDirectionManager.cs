@@ -78,7 +78,6 @@ public class NewDirectionManager : MonoBehaviour
             }
             
             _legalPositions[i].CurrentDirectionChanger.NewDirection = RandomHeading();
-            _legalPositions[i].CurrentDirectionChanger.LeftTurn = RandomTurn();
         }
     }
 
@@ -89,16 +88,10 @@ public class NewDirectionManager : MonoBehaviour
         NewDirectionButton newDirectionButton = newDirectionButtonObject.GetComponent<NewDirectionButton>();
         newDirectionButton.Manager = this;
         newDirectionButton.NewHeading = RandomHeading();
-        newDirectionButton.LeftTurn = RandomTurn();
     }
 
     private static Heading RandomHeading()
     {
         return (Heading)Random.Range(0, (float)Heading.Max);
-    }
-
-    private static bool RandomTurn()
-    {
-        return Random.Range(0.0f, 1.0f) > 0.5f;
     }
 }

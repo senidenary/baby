@@ -10,8 +10,6 @@ using UnityEngine;
 
 public class PreciousCargo : MonoBehaviour
 {
-    private const float KillDist = 0.8f;
-
     #pragma warning disable 0649
     [SerializeField]
     private ScoreManager _scoreManager;
@@ -26,7 +24,6 @@ public class PreciousCargo : MonoBehaviour
     {
         if (other.tag == "Car" || other.tag == "Fire")
         {
-            Debug.Log("Killer: " + other.tag);
             Die(other.tag);
         }
     }

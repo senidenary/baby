@@ -158,7 +158,7 @@ public class MovingEntity : MonoBehaviour
             bool changingDirection = false;
             Heading newHeading = Heading.Max;
             
-            if (directionChanger != null && directionChanger.FromDirection == _heading)
+            if (directionChanger != null && directionChanger.IsFromDirection(_heading))
             {
                 changingDirection = true;
                 newHeading = directionChanger.NewDirection;
