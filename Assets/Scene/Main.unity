@@ -432,7 +432,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Score: 123.45s'
+  m_Text: 'Score: 0.00s'
 --- !u!222 &21244360
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1979,7 +1979,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 567.89s
+  m_Text: 0.00s
 --- !u!222 &300216647
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7480,7 +7480,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 123.40s
+  m_Text: 0.00s
 --- !u!222 &1392400153
 CanvasRenderer:
   m_ObjectHideFlags: 0

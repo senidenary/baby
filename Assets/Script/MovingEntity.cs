@@ -186,6 +186,12 @@ public class MovingEntity : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        transform.rotation = _heading.ToQuaternion();
+        _nextDirectionChanger = null;
+    }
+
     public void Explode()
     {
         if (!_hasExploded && _explosionPrefab)
