@@ -14,6 +14,11 @@ public class ScoreManager : MonoBehaviour
         get { return !_gameOverWindow.activeSelf; }
     }
 
+    public bool GameActive
+    {
+        get { return _gameActive; }
+    }
+
     #pragma warning disable 0649
     [SerializeField]
     private NewDirectionManager _newDirectionManager;

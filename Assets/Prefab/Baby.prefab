@@ -166,3 +166,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreManager: {fileID: 0}
+  _hitCarAudioClip: {fileID: 8300000, guid: 9480a6b3bc0efe94c9a96d58566d6f93, type: 3}
+  _onFireAudioClip: {fileID: 8300000, guid: e5970267a18074043b9c89568b15fa71, type: 3}
+  _babyLeftAudioClip: {fileID: 8300000, guid: fa8384a8bb2db6a449a1a47ed8c9cb37, type: 3}
