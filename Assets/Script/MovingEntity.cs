@@ -21,12 +21,39 @@ public class MovingEntity : MonoBehaviour
         public float maxY;
     }
 
+    [System.Serializable]
+    public struct RespawnPosition
+    {
+        public int x;
+        public int y;
+        public Heading heading;
+    }
+
+    public bool Paused
+    {
+        set { _paused = value; }
+    }
+
+    public bool HasExploded
+    {
+        set { _hasExploded = value; }
+    }
+
+    public Heading CurrentHeading
+    {
+        get { return _heading; }
+        set { _heading = value; }
+    }
+
     #pragma warning disable 0649
     [SerializeField]
     private float _speed;
 
     [SerializeField]
     private Heading _heading;
+
+    [SerializeField]
+    private RespawnPosition[] _respawnPositions;
 
     [SerializeField]
     private GridBounds _bounds;
@@ -38,6 +65,10 @@ public class MovingEntity : MonoBehaviour
     private GameObject _nextDirectionChanger = null;
     private float _prevDist;
 
+    private bool _paused = true;
+
+    private bool _hasExploded = false;
+
     private void Start()
     {
         transform.rotation = _heading.ToQuaternion();
@@ -45,6 +76,11 @@ public class MovingEntity : MonoBehaviour
 
     private void Update()
     {
+        if (_paused)
+        {
+            return;
+        }
+
         transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime, Space.World);
 
         Vector3 pos = transform.position;
@@ -76,13 +112,18 @@ public class MovingEntity : MonoBehaviour
             PreciousCargo preciousCargo = GetComponent<PreciousCargo>();
             if (preciousCargo != null)
             {
-                preciousCargo.Die();
+                preciousCargo.Die("Border");
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_paused)
+        {
+            return;
+        }
+
         if (other.gameObject.GetComponent<DirectionChanger>() != null ||
             other.gameObject.GetComponent<TwoWayDirectionChanger>() != null)
         {
@@ -91,7 +132,7 @@ public class MovingEntity : MonoBehaviour
         }
         else
         {
-            if (other.tag == "Car" || other.tag == "Fire")
+            if (tag == "Car" && (other.tag == "Car" || other.tag == "Fire"))
             {
                 MovingEntity otherEntity = other.gameObject.GetComponent<MovingEntity>();
                 if (otherEntity)
@@ -105,6 +146,11 @@ public class MovingEntity : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other)
     {
+        if (_paused)
+        {
+            return;
+        }
+
         if (_nextDirectionChanger == other.gameObject)
         {
             DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
@@ -142,13 +188,49 @@ public class MovingEntity : MonoBehaviour
 
     public void Explode()
     {
-        if (_explosionPrefab)
+        if (!_hasExploded && _explosionPrefab)
         {
             Vector3 explosionPosition = transform.position;
             explosionPosition.z -= 2;
+
+            int respawnPositionIndex = GetAvailableRespawnPositionIndex();
+            transform.position = new Vector3(_respawnPositions[respawnPositionIndex].x, _respawnPositions[respawnPositionIndex].y, 0);
+            transform.rotation =  _respawnPositions[respawnPositionIndex].heading.ToQuaternion();
+            _heading = _respawnPositions[respawnPositionIndex].heading;
+            //_hasExploded = true;
+
             GameObject explosionObject = GameObject.Instantiate(_explosionPrefab, explosionPosition, Quaternion.identity);
-            //GameObject.Destroy(explosionObject, 0.5f);
-            GameObject.Destroy(gameObject);
         }
+    }
+
+    // I'm sure this is something we were told never to do in CS class
+    private int GetAvailableRespawnPositionIndex()
+    {
+        const float minDist = 1.0f;
+        GameObject[] cars = GameObject.FindGameObjectsWithTag("Car");
+        List<int> validIndices = new List<int>();
+
+        for (int i = 0; i < _respawnPositions.Length; ++i)
+        {
+            bool valid = true;
+            foreach (GameObject car in cars)
+            {
+                if (Mathf.Abs(car.transform.position.x - _respawnPositions[i].x) < minDist &&
+                    Mathf.Abs(car.transform.position.y - _respawnPositions[i].y) < minDist)
+                {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid)
+            {
+                validIndices.Add(i);
+            }
+        }
+
+        int validIndexIndex = Random.Range(0, validIndices.Count);
+
+        return validIndices[validIndexIndex];
     }
 }

@@ -41,6 +41,9 @@ public class NewDirectionManager : MonoBehaviour
 
     [SerializeField]
     private GameObject _directionChangerPrefab;
+
+    [SerializeField]
+    private ScoreManager _scoreManager;
     #pragma warning restore 0649
 
     private GridLayoutGroup _gridLayoutGroup;
@@ -53,22 +56,30 @@ public class NewDirectionManager : MonoBehaviour
         {
             AddNewDirectionButton();
         }
-
-        for (int i = 0; i < _legalPositions.Length; ++i)
-        {
-            Vector3 spawnLocation = new Vector3(_legalPositions[i].x, _legalPositions[i].y, 0);
-            GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity);
-            DirectionChanger directionChanger = obj.GetComponent<DirectionChanger>();
-            _legalPositions[i].CurrentDirectionChanger = directionChanger;
-            directionChanger.NewDirection = RandomHeading();
-            directionChanger.LeftTurn = RandomTurn();
-        }
     }
 
     public void HasBeenPlaced(GameObject newDirectionButtonObject)
     {
         GameObject.Destroy(newDirectionButtonObject);
         AddNewDirectionButton();
+        _scoreManager.StartGame();
+    }
+
+    public void ScrambleDirections()
+    {
+        for (int i = 0; i < _legalPositions.Length; ++i)
+        {
+            if (_legalPositions[i].CurrentDirectionChanger == null)
+            {
+                Vector3 spawnLocation = new Vector3(_legalPositions[i].x, _legalPositions[i].y, 0);
+                GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity);
+                DirectionChanger directionChanger = obj.GetComponent<DirectionChanger>();
+                _legalPositions[i].CurrentDirectionChanger = directionChanger;
+            }
+            
+            _legalPositions[i].CurrentDirectionChanger.NewDirection = RandomHeading();
+            _legalPositions[i].CurrentDirectionChanger.LeftTurn = RandomTurn();
+        }
     }
 
     private void AddNewDirectionButton()

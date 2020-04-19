@@ -12,20 +12,22 @@ public class PreciousCargo : MonoBehaviour
 {
     private const float KillDist = 0.8f;
 
-    public void Die()
+    #pragma warning disable 0649
+    [SerializeField]
+    private ScoreManager _scoreManager;
+    #pragma warning restore 0649
+
+    public void Die(string killer)
     {
-        //Debug.Log("Hazard");
+        _scoreManager.GameOver(killer);
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Car" || other.tag == "Fire")
         {
-            float dist = Vector3.Distance(other.transform.position, transform.position);
-            if (dist < KillDist)
-            {
-                Die();
-            }
+            Debug.Log("Killer: " + other.tag);
+            Die(other.tag);
         }
     }
 }
