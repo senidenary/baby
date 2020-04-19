@@ -103,6 +103,8 @@ MonoBehaviour:
     minY: -4.2
     maxX: 7.2
     maxY: 5.2
+  _explosionPrefab: {fileID: 5338042027160252207, guid: efa415834855dd945ae8cb8c84b3f8b5,
+    type: 3}
 --- !u!61 &1207771712420178254
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -120,7 +122,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 0.5, y: 0.94}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0

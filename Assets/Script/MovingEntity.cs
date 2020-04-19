@@ -30,6 +30,9 @@ public class MovingEntity : MonoBehaviour
 
     [SerializeField]
     private GridBounds _bounds;
+
+    [SerializeField]
+    private GameObject _explosionPrefab;
     #pragma warning restore 0649
 
     private GameObject _nextDirectionChanger = null;
@@ -86,6 +89,15 @@ public class MovingEntity : MonoBehaviour
             _nextDirectionChanger = other.gameObject;
             _prevDist = Vector3.Distance(other.transform.position, transform.position);
         }
+        else
+        {
+            MovingEntity otherEntity = other.gameObject.GetComponent<MovingEntity>();
+            if (otherEntity != null)
+            {
+                otherEntity.Explode();
+                Explode();
+            }
+        }
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -122,6 +134,18 @@ public class MovingEntity : MonoBehaviour
 
                 transform.rotation = Quaternion.Lerp(_heading.ToQuaternion(), newHeading.ToQuaternion(), 1 - dist);
             }
+        }
+    }
+
+    public void Explode()
+    {
+        if (_explosionPrefab)
+        {
+            Vector3 explosionPosition = transform.position;
+            explosionPosition.z -= 2;
+            GameObject explosionObject = GameObject.Instantiate(_explosionPrefab, explosionPosition, Quaternion.identity);
+            GameObject.Destroy(explosionObject, 0.5f);
+            GameObject.Destroy(gameObject);
         }
     }
 }
