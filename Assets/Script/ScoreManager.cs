@@ -31,6 +31,9 @@ public class ScoreManager : MonoBehaviour
     private GameObject _gameOverWindow;
 
     [SerializeField]
+    private GameObject _carNumSelectionGroup;
+
+    [SerializeField]
     private Text _gameOverWindowReasonText;
 
     [SerializeField]
@@ -44,7 +47,8 @@ public class ScoreManager : MonoBehaviour
     #pragma warning restore 0649
 
     private float _currentScore = 0.0f;
-    private float _highScore = 0.0f;
+    private float[] _highScores = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+    private int _numCars;
 
     // It's late, I don't want to make a struct
     private Vector3[] _originalPositions;
@@ -66,6 +70,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         ResetGame();
+        SetNumCars(3);
     }
 
     private void Update()
@@ -77,11 +82,22 @@ public class ScoreManager : MonoBehaviour
 
         _currentScore += Time.deltaTime;
         _currentScoreText.text = _currentScore.ToString("0.00") + "s";
-        if (_currentScore > _highScore)
+        if (_currentScore > _highScores[_numCars])
         {
-            _highScore = _currentScore;
+            _highScores[_numCars] = _currentScore;
             _highScoreText.text = _currentScore.ToString("0.00") + "s";
         }
+    }
+
+    public void SetNumCars(int numCars)
+    {
+        _numCars = numCars - 1;
+        //_movingEntities[0] should be baby
+        for (int i = 1; i < _movingEntities.Length; ++i)
+        {
+            _movingEntities[i].gameObject.SetActive(i <= numCars);
+        }
+        _highScoreText.text = _highScores[_numCars].ToString("0.00") + "s";
     }
 
     public void GameOver(string killer)
@@ -121,6 +137,7 @@ public class ScoreManager : MonoBehaviour
     {
         _gameOverWindow.SetActive(false);
         _startInstructions.SetActive(true);
+        _carNumSelectionGroup.SetActive(true);
 
         _newDirectionManager.ScrambleDirections();
 
@@ -158,6 +175,7 @@ public class ScoreManager : MonoBehaviour
         }
 
         _startInstructions.SetActive(false);
+        _carNumSelectionGroup.SetActive(false);
         foreach (MovingEntity movingEntity in _movingEntities)
         {
             movingEntity.Paused = false;
