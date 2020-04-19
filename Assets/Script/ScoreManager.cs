@@ -9,6 +9,11 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
+    public bool CanPlaceDirections
+    {
+        get { return !_gameOverWindow.activeSelf; }
+    }
+
     #pragma warning disable 0649
     [SerializeField]
     private NewDirectionManager _newDirectionManager;
@@ -85,7 +90,7 @@ public class ScoreManager : MonoBehaviour
         {
             return;
         }
-        
+
         _gameActive = false;
         _gameOverWindow.SetActive(true);
         _gameOverWindowScoreText.text = "Score: " + _currentScore.ToString("0.00") + "s";

@@ -31,60 +31,85 @@ public class NewDirectionButton : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     private NewDirectionManager _newDirectionManager;
     private Vector3 _startPos;
+    private bool _isBeingDragged = false;
 
     private void Start()
     {
         transform.rotation = _heading.ToQuaternion();
     }
 
+    private void Update()
+    {
+        if (_isBeingDragged && !_newDirectionManager.CanPlaceNewDirections())
+        {
+            transform.position = _startPos;
+            _isBeingDragged = false;
+        }
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _startPos = transform.position;
+        if (_newDirectionManager.CanPlaceNewDirections())
+        {
+            _startPos = transform.position;
+            _isBeingDragged = true;
+        }
+        else
+        {
+            eventData.pointerDrag = null;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        //Debug.Log(transform.position);
-        transform.position = eventData.position;
-        //Debug.Log(transform.position);
+        if (_newDirectionManager.CanPlaceNewDirections())
+        {
+            transform.position = eventData.position;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(eventData.position);
-        NewDirectionManager.LegalPosition positionToTest;
-        positionToTest.x = Mathf.FloorToInt(spawnLocation.x + 0.5f);
-        positionToTest.y = Mathf.FloorToInt(spawnLocation.y + 0.5f);
-
-        int positionIndex = Array.FindIndex(_newDirectionManager.LegalPositions, p => p.x == positionToTest.x && p.y == positionToTest.y);
-        if (positionIndex != -1)
+        if (_newDirectionManager.CanPlaceNewDirections())
         {
-            DirectionChanger directionChanger = null;
+            Vector3 spawnLocation = Camera.main.ScreenToWorldPoint(eventData.position);
+            NewDirectionManager.LegalPosition positionToTest;
+            positionToTest.x = Mathf.FloorToInt(spawnLocation.x + 0.5f);
+            positionToTest.y = Mathf.FloorToInt(spawnLocation.y + 0.5f);
 
-            if (_newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger != null)
+            int positionIndex = Array.FindIndex(_newDirectionManager.LegalPositions, p => p.x == positionToTest.x && p.y == positionToTest.y);
+            if (positionIndex != -1)
             {
-                directionChanger = _newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger;
+                DirectionChanger directionChanger = null;
+
+                if (_newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger != null)
+                {
+                    directionChanger = _newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger;
+                }
+                else
+                {
+                    spawnLocation.x = positionToTest.x;
+                    spawnLocation.y = positionToTest.y;
+                    spawnLocation.z = 0;
+
+                    GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity);
+                    directionChanger = obj.GetComponent<DirectionChanger>();
+
+                    _newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger = directionChanger;
+                }
+
+                if (directionChanger != null)
+                {
+                    directionChanger.NewDirection = _heading;
+                }
+
+                _newDirectionManager.HasBeenPlaced(gameObject);
+                _isBeingDragged = false;
             }
             else
             {
-                spawnLocation.x = positionToTest.x;
-                spawnLocation.y = positionToTest.y;
-                spawnLocation.z = 0;
-
-                GameObject obj = GameObject.Instantiate(_directionChangerPrefab, spawnLocation, Quaternion.identity);
-                directionChanger = obj.GetComponent<DirectionChanger>();
-
-                _newDirectionManager.LegalPositions[positionIndex].CurrentDirectionChanger = directionChanger;
+                transform.position = _startPos;
             }
-
-            if (directionChanger != null)
-            {
-                directionChanger.NewDirection = _heading;
-            }
-
-            _newDirectionManager.HasBeenPlaced(gameObject);
         }
-
-        transform.position = _startPos;
     }
 }

@@ -81,6 +81,11 @@ public class NewDirectionManager : MonoBehaviour
         }
     }
 
+    public bool CanPlaceNewDirections()
+    {
+        return _scoreManager.CanPlaceDirections;
+    }
+
     private void AddNewDirectionButton()
     {
         GameObject newDirectionButtonObject = GameObject.Instantiate(_newDirectionButtonPrefab);
