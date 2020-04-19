@@ -35,9 +35,14 @@ public class MovingEntity : MonoBehaviour
     private GameObject _nextDirectionChanger = null;
     private float _prevDist;
 
-    void Update()
+    private void Start()
     {
-        transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime);
+        transform.rotation = _heading.ToQuaternion();
+    }
+
+    private void Update()
+    {
+        transform.Translate(_heading.ToVector3() * _speed * Time.deltaTime, Space.World);
 
         Vector3 pos = transform.position;
         bool reachedBorder = false;
@@ -88,30 +93,35 @@ public class MovingEntity : MonoBehaviour
         if (_nextDirectionChanger == other.gameObject)
         {
             DirectionChanger directionChanger = other.gameObject.GetComponent<DirectionChanger>();
+            TwoWayDirectionChanger twoWayDirectionChanger = other.gameObject.GetComponent<TwoWayDirectionChanger>();
+            bool changingDirection = false;
+            Heading newHeading = Heading.Max;
+            
             if (directionChanger != null && directionChanger.FromDirection == _heading)
             {
-                float dist = Vector3.Distance(other.transform.position, transform.position);
-                if (dist < Delta || dist > _prevDist)
-                {
-                    _heading = directionChanger.NewDirection;
-                    transform.position = other.transform.position;
-                    _nextDirectionChanger = null;
-                }
-                _prevDist = dist;
+                changingDirection = true;
+                newHeading = directionChanger.NewDirection;
+            }
+            else if (twoWayDirectionChanger != null)
+            {
+                changingDirection = true;
+                newHeading = twoWayDirectionChanger.GetOtherDirection(_heading);
             }
 
-            TwoWayDirectionChanger twoWayDirectionChanger = other.gameObject.GetComponent<TwoWayDirectionChanger>();
-            if (twoWayDirectionChanger != null)
+            if (changingDirection)
             {
                 float dist = Vector3.Distance(other.transform.position, transform.position);
                 if (dist < Delta || dist > _prevDist)
                 {
-                    _heading = twoWayDirectionChanger.GetOtherDirection(_heading);
+                    _heading = newHeading;
                     transform.position = other.transform.position;
+                    dist = 0;
                     _nextDirectionChanger = null;
                 }
                 _prevDist = dist;
+
+                transform.rotation = Quaternion.Lerp(_heading.ToQuaternion(), newHeading.ToQuaternion(), 1 - dist);
             }
         }
-   }
+    }
 }

@@ -14,7 +14,7 @@ public class PreciousCargo : MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Hazard");
+        //Debug.Log("Hazard");
     }
 
     private void OnTriggerStay2D(Collider2D other)
